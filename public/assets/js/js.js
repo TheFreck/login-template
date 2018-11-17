@@ -1,15 +1,11 @@
-// Code here handles what happens when a user submits a new account.
-
 
 console.log("js.js loaded");
 
 
-// ADD    ****************
 $("#signUp").on("click", function (event) {
   event.preventDefault();
 
   console.log("Entered add account button.")
-  // make a newAccount obj
   var newAccount = {
     name: $("#nameUp").val().trim(),
     email: $("#emailUp").val().trim(),

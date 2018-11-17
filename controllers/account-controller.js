@@ -8,10 +8,6 @@ module.exports = function (app) {
     console.log("%%%%%%%%% is logged in", req.isAuthenticated());
    
     if(req.isAuthenticated()){
-       // var user = {
-       //    id: req.session.passport.user,
-       //    isloggedin: req.isAuthenticated()
-       //  }
 
       db.Accounts.findOne({
         where:{
@@ -37,7 +33,7 @@ module.exports = function (app) {
    
 });
 
-    // logout of user account
+    // logout
   app.get('/logout', function(req, res) {
       req.session.destroy(function(err){
         req.logout();
@@ -64,13 +60,6 @@ module.exports = function (app) {
         return res.send({ success : false, message : 'authentication failed' });
       }
       
-      // ***********************************************************************
-      // "Note that when using a custom callback, it becomes the application's
-      // responsibility to establish a session (by calling req.login()) and send
-      // a response."
-      // Source: http://passportjs.org/docs
-      // ***********************************************************************
-
       req.login(user, function(err) {
         if (err) {
           console.log("err", err)
@@ -89,7 +78,6 @@ module.exports = function (app) {
     console.log("req.body", req.body);
     passport.authenticate('local-login', function(err, user, info) {
       console.log("user: " + user);
-      // console.log("res: ", res);
       console.log("\n\n########userrrr", user + "\n");
       if (err) {
         console.log("passport err", err);
@@ -102,13 +90,6 @@ module.exports = function (app) {
         return res.send({ success : false, message : 'authentication failed'});
       }
       
-      // ***********************************************************************
-      // "Note that when using a custom callback, it becomes the application's
-      // responsibility to establish a session (by calling req.login()) and send
-      // a response."
-      // Source: http://passportjs.org/docs
-      // ***********************************************************************
-
       req.login(user, function(err) {
         if (err) {
           console.log("err", err)

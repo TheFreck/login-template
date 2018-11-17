@@ -1,28 +1,20 @@
-// config/passport.js
-
-// load all the things we need
 var LocalStrategy = require('passport-local').Strategy;
 
-// load up the user model
 var db  = require('../models');
 
-// expose this function to our app using module.exports
 module.exports = function(passport) {
-    // console.log("passport loading");
 
     // =========================================================================
-    // passport session setup ==================================================
+    // passport session setup
     // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
 
-    // used to serialize the user for the session
+    // tags the user as logged in or logged out
+
     passport.serializeUser(function(user, done) {
         console.log("user.uuid",user.uuid);
         done(null, user.uuid);
     });
 
-    // used to deserialize the user
     passport.deserializeUser(function(uuid, done) {
         db.Accounts.findById(uuid).then(function(user) {
  
@@ -31,7 +23,6 @@ module.exports = function(passport) {
 	            done(null, user.get());
 	 
 	        } else {
-	           // console.log("user.errors", user.errors)
 	            done(user.errors, null);
 	 
 	        }
@@ -40,23 +31,17 @@ module.exports = function(passport) {
     });
 
     // =========================================================================
-    // LOCAL SIGNUP ============================================================
+    // LOCAL SIGNUP
     // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
 
 passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and account_key, we will override with email
         usernameField: 'email',
         passwordField : 'account_key',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
+        passReqToCallback : true
     },
     function(req, email, account_key, done) {
-        // asynchronous
-        // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
+        // does the user already exist?
 
         db.Accounts.findOne({
             where: {
@@ -68,14 +53,13 @@ passport.use('local-signup', new LocalStrategy({
                 return done(err);
             } 
 
-            // check to see if theres already a user with that email
+            // is that email already taken?
             if (user) {
 
             	console.log('signupMessage', 'That email is already taken.');
                 return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
             } else {
-                // if there is no user with that email
-                // create the user
+                // if not make a new user
                 db.Accounts.create({
                             name: req.body.name,
 						    email: req.body.email,
@@ -95,21 +79,16 @@ passport.use('local-signup', new LocalStrategy({
 }));
 
     // =========================================================================
-    // LOCAL LOGIN =============================================================
+    // LOCAL LOGIN 
     // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
 
 passport.use('local-login', new LocalStrategy({
-        // by default, local strategy uses username and account_key, we will override with email
         usernameField: 'email',
         passwordField : 'account_key',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
+        passReqToCallback : true
     },
-    function(req, email, account_key, done) { // callback with email and account_key from our form
-       
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
+    function(req, email, account_key, done) { 
+        // does this user already exist?
         db.Accounts.findOne({
             where: {
                 email: req.body.email 
@@ -118,18 +97,16 @@ passport.use('local-login', new LocalStrategy({
                 
             if(err) throw err;
 
-            // if no user is found, return the message
-
             if (!user){
                 console.log("no user found");
-                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                return done(null, false, req.flash('loginMessage', 'No user found.'));
             }
                 
 
-            // if the user is found but the account_key is wrong
+            // if the user exists but fails password
             if (user && !user.validPassword(req.body.account_key)){
 
-                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
             }
 
             // all is well, return successful user

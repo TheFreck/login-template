@@ -35,13 +35,12 @@ module.exports = function(sequelize, DataTypes) {
         }
 
     });
-    // methods ======================
-      // generating a hash
+      // generating hash
       Accounts.generateHash = function(password) {
           return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
       };
 
-      // checking if password is valid
+      // checking password
       Accounts.prototype.validPassword = function(password) {
           return bcrypt.compareSync(password, this.account_key);
       };
