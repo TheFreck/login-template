@@ -5,7 +5,6 @@ var passport = require('passport');
 module.exports = function (app) {
 
   app.get("/accounts/view", function (req, res) {
-    console.log("%%%%%%%%% is logged in", req.isAuthenticated());
    
     if(req.isAuthenticated()){
 
@@ -48,15 +47,12 @@ module.exports = function (app) {
 
   app.post('/signup', function(req, res, next) {
     passport.authenticate('local-signup', function(err, user, info) {
-      console.log("info", info);
-      console.log("signup req.body: ", req.body);
       if (err) {
         console.log("passport err", err);
         return next(err); // will generate a 500 error
       }
       // Generate a JSON response reflecting authentication status
       if (! user) {
-        console.log("user error", user);
         return res.send({ success : false, message : 'authentication failed' });
       }
       
@@ -75,10 +71,8 @@ module.exports = function (app) {
   });
 
   app.post('/login', function(req, res, next) {
-    console.log("req.body", req.body);
     passport.authenticate('local-login', function(err, user, info) {
       console.log("user: " + user);
-      console.log("\n\n########userrrr", user + "\n");
       if (err) {
         console.log("passport err", err);
         return next(err); // will generate a 500 error

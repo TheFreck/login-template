@@ -8,7 +8,6 @@ $("#signUp").on("click", function (event) {
     account_key: $("#passwordUp").val().trim(),
     account_key2: $("#passwordConfirm").val().trim()
   };
-  console.log("newAccount: ", newAccount);
   if (newAccount.account_key.length > 0 && newAccount.email.length > 0 && newAccount.account_key.length > 0 && newAccount.name.length > 0) {
     if(newAccount.account_key === newAccount.account_key2){
       $.post("/signup", newAccount, function(results) {
@@ -19,7 +18,6 @@ $("#signUp").on("click", function (event) {
     } else {
       console.log("**passwords don't match**");
       $("#create-err-msg").empty("").text("**Passwords don't match**");
-      console.log("password: ", newAccount.passwordUp)
     };
   } else {
     console.log("**Please fill out entire form**");
