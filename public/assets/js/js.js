@@ -1,7 +1,3 @@
-
-console.log("js.js loaded");
-
-
 $("#signUp").on("click", function (event) {
   event.preventDefault();
 

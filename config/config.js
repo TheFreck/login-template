@@ -5,7 +5,7 @@ connection = {
   "development": {
     "username": "root",
     "password": "root",
-    "database": "greedy",
+    "database": "login",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
